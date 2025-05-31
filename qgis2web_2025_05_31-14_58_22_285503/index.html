@@ -10,6 +10,8 @@
         <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
         <link rel="stylesheet" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
         html, body, #map {
             width: 100%;
@@ -35,11 +37,13 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
         <script src="data/poi_1.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        }).fitBounds([[1.5197546262728538,110.32989773306426],[1.5690029788777522,110.42922007296244]]);
+        }).fitBounds([[1.5557181792875876,110.35478993358407],[1.5680301658601985,110.36683498872084]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -74,6 +78,16 @@
         var zoomControl = L.control.zoom({
             position: 'topleft'
         }).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
@@ -93,14 +107,19 @@
         function pop_poi_1(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(String(feature.properties['id']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">desc</th>\
+                        <th scope="row">Description</th>\
                         <td>' + (feature.properties['desc'] !== null ? autolinker.link(String(feature.properties['desc']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['day'] !== null ? autolinker.link(String(feature.properties['day']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <th scope="row">Day of Trip</th>\
+                        <td>' + (feature.properties['day'] !== null ? autolinker.link(String(feature.properties['day']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">link</th>\
+                        <td>' + (feature.properties['link'] !== null ? autolinker.link(String(feature.properties['link']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link2'] !== null ? autolinker.link(String(feature.properties['link2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -124,7 +143,7 @@
                 weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(209,99,228,1.0)',
+                fillColor: 'rgba(144,220,99,1.0)',
                 interactive: true,
             }
                     break;
@@ -140,7 +159,39 @@
                 weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(107,202,189,1.0)',
+                fillColor: 'rgba(122,227,208,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_poi_1',
+                radius: 9.53334,
+                opacity: 1,
+                color: 'rgba(184,8,8,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(228,79,196,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_poi_1',
+                radius: 9.53334,
+                opacity: 1,
+                color: 'rgba(184,8,8,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,134,76,1.0)',
                 interactive: true,
             }
                     break;
@@ -156,7 +207,7 @@
                 weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(219,195,61,1.0)',
+                fillColor: 'rgba(66,63,220,1.0)',
                 interactive: true,
             }
                     break;
@@ -176,7 +227,7 @@
                 weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(209,99,228,1.0)',
+                fillColor: 'rgba(144,220,99,1.0)',
                 interactive: true,
             }
                     break;
@@ -192,7 +243,39 @@
                 weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(107,202,189,1.0)',
+                fillColor: 'rgba(122,227,208,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_poi_1',
+                radius: 10.4,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(228,79,196,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_poi_1',
+                radius: 10.4,
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,134,76,1.0)',
                 interactive: true,
             }
                     break;
@@ -208,7 +291,7 @@
                 weight: 1.0,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(219,195,61,1.0)',
+                fillColor: 'rgba(66,63,220,1.0)',
                 interactive: true,
             }
                     break;
@@ -241,7 +324,7 @@
         bounds_group.addLayer(layer_poi_1);
         map.addLayer(layer_poi_1);
         var overlaysTree = [
-            {label: 'poi<br /><table><tr><td style="text-align: center;"><img src="legend/poi_1_10.png" /></td><td>1</td></tr><tr><td style="text-align: center;"><img src="legend/poi_1_21.png" /></td><td>2</td></tr><tr><td style="text-align: center;"><img src="legend/poi_1_2.png" /></td><td></td></tr></table>', layer: layer_poi_1},
+            {label: 'poi<br /><table><tr><td style="text-align: center;"><img src="legend/poi_1_10.png" /></td><td>1</td></tr><tr><td style="text-align: center;"><img src="legend/poi_1_21.png" /></td><td>2</td></tr><tr><td style="text-align: center;"><img src="legend/poi_1_32.png" /></td><td>3</td></tr><tr><td style="text-align: center;"><img src="legend/poi_1_43.png" /></td><td>4</td></tr><tr><td style="text-align: center;"><img src="legend/poi_1_4.png" /></td><td></td></tr></table>', layer: layer_poi_1},
             {label: "OSM Standard", layer: layer_OSMStandard_0},]
         var lay = L.control.layers.tree(null, overlaysTree,{
             //namedToggle: true,
@@ -267,6 +350,13 @@
               addLabel(layer, i);
               i++;
         });
+        map.addControl(new L.Control.Search({
+            layer: layer_poi_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'desc'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
         resetLabels([layer_poi_1]);
         map.on("zoomend", function(){
             resetLabels([layer_poi_1]);
